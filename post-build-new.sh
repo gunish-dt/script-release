@@ -1,11 +1,11 @@
-APP_DOCKER_REPO=$1
-APP_MANIFEST=$2
+APP_DOCKER_REPO=$DOCKER_REPO
+APP_MANIFEST=$MANIFEST
 REPO="gunish-dt/devtronRelease"
 GIT_REPO="github.com/$REPO.git"
 GIT_CONFIG_EMAIL="gunish@devtron.ai"
 GIT_CONFIG_NAME="gunish-dt"
 GIT_USERNAME="gunish-dt"
-GITHUB_TOKENS=$3
+GITHUB_TOKENS=$PAT
 GIT_BRANCH="main"
 RAW_GIT_REPO="https:\/\/raw.githubusercontent.com\/gunish-dt\/devtronRelease\/"
 VERSION_FILE="manifests/version.txt"
