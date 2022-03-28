@@ -73,16 +73,17 @@ sed -i "s/url:.*/url: $RAW_GIT_REPO$NEXT_RELEASE_VERSION\/manifests\/installatio
 
 
 #IF ELSE for migration
-
-if [ [$DEVTRON_MIGRATOR_LINE=="x" && $CASBIN_MIGRATOR_LINE=="x"] ];
-then
+echo "=================If else check from migration======================="
+if [ [$DEVTRON_MIGRATOR_LINE=="x" && $CASBIN_MIGRATOR_LINE=="x"] ]
+  then
    echo "No Migration Changes"
-else 
+  else 
 # ========== Updating the Migration script with latest commit hash ==========
-  sed -i "$DEVTRON_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
-  sed -i "$CASBIN_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
+    sed -i "$DEVTRON_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
+    sed -i "$CASBIN_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
 #################################
 fi
+echo "=================If else check from migration======================="
 
 git commit -am "Updated latest image of $APP_DOCKER_REPO in the installer"
 git push -f https://$GIT_USERNAME:$GITHUB_TOKENS@$GIT_REPO --all
