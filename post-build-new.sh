@@ -13,6 +13,8 @@ RELEASE_BRANCH=$RELEASE_BRANCH
 MIGRATOR_FILE=$MIGRATOR_FILE
 DEVTRON_MIGRATOR_LINE=$DEVTRON_MIGRATOR_LINE
 CASBIN_MIGRATOR_LINE=$CASBIN_MIGRATOR_LINE
+
+
 #Getting the commits
 BUILD_COMMIT=$(git rev-parse HEAD)
 echo "=======================GUNISH=========================="
@@ -62,18 +64,29 @@ if [[ $DEV_RELEASE == $RELEASE_VERSION ]]
 fi
 #Updating LTAG Version in the installation-script
 sed -i "s/LTAG=.*/LTAG=\"$NEXT_RELEASE_VERSION\";/" manifests/installation-script
+
+
 #Updating latest installation-script URL in the devtron-installer.yaml
 sed -i "s/url:.*/url: $RAW_GIT_REPO$NEXT_RELEASE_VERSION\/manifests\/installation-script/" manifests/install/devtron-installer.yaml
 
+
+
+
+#IF ELSE for migration
+
+if [ [$DEVTRON_MIGRATOR_LINE=="x" && $CASBIN_MIGRATOR_LINE=="x"] ];
+then
+   echo "No Migration Changes"
+else 
 # ========== Updating the Migration script with latest commit hash ==========
-sed -i "$DEVTRON_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
-sed -i "$CASBIN_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
+  sed -i "$DEVTRON_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
+  sed -i "$CASBIN_MIGRATOR_LINE s/value.*/value: $BUILD_COMMIT/" manifests/yamls/$MIGRATOR_FILE
+#################################
+fi
 
 git commit -am "Updated latest image of $APP_DOCKER_REPO in the installer"
 git push -f https://$GIT_USERNAME:$GITHUB_TOKENS@$GIT_REPO --all
 #Creating Release ######################
-#RELEASE_RESPONSE=$(../bin/gh release create $NEXT_RELEASE_VERSION --target $RELEASE_BRANCH -R $REPO)
-#echo "FINAL RELEASE RESPONSE: $RELEASE_RESPONSE"
-#Creating PR into main branch
+
 PR_RESPONSE=$(../bin/gh pr create --title "RELEASE: PR for $NEXT_RELEASE_VERSION" --body "Updates in $APP_DOCKER_REPO micro-service" --base $GIT_BRANCH --head $RELEASE_BRANCH --repo $REPO)
 echo "FINAL PR RESPONSE: $PR_RESPONSE"
